@@ -15,9 +15,53 @@
 #
 ################################################################################
 
+cd $SRC
+tar zxvf jbigkit-2.1.tar.gz
+cd $SRC/jbigkit-2.1/libjbig
+
+# Patch the Makefile because it uses hardcoded CC, CFLAGS
+sed -i 's/^CC = .*$//g' Makefile
+sed -i 's/^CFLAGS = .*$//g' Makefile
+
+make -j$(nproc)
+
+mkdir -p $SRC/libjpeg-turbo/build
+cd $SRC/libjpeg-turbo/build
+cmake -G"Unix Makefiles" -DWITH_SIMD=0 ..
+make -j$(nproc)
+make install
+ldconfig
+
+cd $SRC/zlib
+./configure
+make -j$(nproc)
+make install
+ldconfig
+
+cd $SRC/libtiff
+./autogen.sh
+./configure
+make -j$(nproc)
+make install
+ldconfig
+
+cd $SRC
+tar zxvf xz-5.2.4.tar.gz
+cd $SRC/xz-5.2.4
+./configure
+make -j$(nproc)
+make install
+ldconfig
+
 cd $SRC/leptonica
 ./autogen.sh
 ./configure
+make -j$(nproc)
+make install
+ldconfig
+
+cd $SRC/libpng
+CPPFLAGS="-I $SRC/zlib" LDFLAGS="-L$SRC/zlib" ./configure
 make -j$(nproc)
 make install
 ldconfig
@@ -39,10 +83,10 @@ $CXX $CXXFLAGS \
      $SRC/tesseract-ocr-fuzzers/fuzzer-api.cpp -o $OUT/fuzzer-api \
      $SRC/tesseract/src/api/.libs/libtesseract.a \
      /usr/local/lib/liblept.a \
-     /usr/lib/x86_64-linux-gnu/libtiff.a \
-     /usr/lib/x86_64-linux-gnu/libpng.a \
-     /usr/lib/x86_64-linux-gnu/libjpeg.a \
-     /usr/lib/x86_64-linux-gnu/libjbig.a \
-     /usr/lib/x86_64-linux-gnu/liblzma.a \
-     -lz \
+     $SRC/libtiff/libtiff/.libs/libtiff.a \
+     $SRC/libpng/.libs/libpng16.a \
+     $SRC/libjpeg-turbo/build/libjpeg.a \
+     $SRC/jbigkit-2.1/libjbig/libjbig.a \
+     $SRC/xz-5.2.4/src/liblzma/.libs/liblzma.a \
+     $SRC/zlib/libz.a \
      -lFuzzingEngine

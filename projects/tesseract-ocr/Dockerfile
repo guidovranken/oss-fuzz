@@ -16,7 +16,13 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER guidovranken@gmail.com
-RUN apt-get update && apt-get install -y autoconf automake libtool pkg-config libpng-dev libjpeg8-dev libtiff5-dev zlib1g-dev
+RUN apt-get update && apt-get install -y autoconf automake libtool pkg-config wget cmake sed
+RUN git clone --depth 1 https://github.com/madler/zlib
+RUN git clone --depth 1 https://gitlab.com/libtiff/libtiff
+RUN git clone --depth 1 https://github.com/glennrp/libpng.git
+RUN wget https://tukaani.org/xz/xz-5.2.4.tar.gz
+RUN git clone --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo
+RUN wget https://www.cl.cam.ac.uk/~mgk25/jbigkit/download/jbigkit-2.1.tar.gz
 RUN git clone --depth 1 https://github.com/danbloomberg/leptonica
 RUN git clone --depth 1 https://github.com/tesseract-ocr/tesseract
 RUN git clone --depth 1 https://github.com/tesseract-ocr/tessdata
