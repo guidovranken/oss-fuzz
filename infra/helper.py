@@ -268,7 +268,7 @@ def _add_architecture_args(parser, choices=('x86_64', 'i386')):
 
 def _add_engine_args(
         parser,
-        choices=('libfuzzer', 'afl', 'honggfuzz', 'dataflow', 'none')):
+        choices=('libfuzzer', 'afl', 'honggfuzz', 'dataflow', 'libfuzzer-gv', 'none')):
   """Add common engine args."""
   parser.add_argument('--engine', default='libfuzzer', choices=choices)
 

@@ -45,6 +45,8 @@ function get_dictionary() {
   [[ -z "$dict" ]] && return
   if [[ "$FUZZING_ENGINE" = "libfuzzer" ]]; then
      printf -- "-dict=%s" "$dict"
+  elif [[ "$FUZZING_ENGINE" = "libfuzzer-gv" ]]; then
+     printf -- "-dict=%s" "$dict"
   elif [[ "$FUZZING_ENGINE" = "afl" ]]; then
      printf -- "-x %s" "$dict"
   elif [[ "$FUZZING_ENGINE" = "honggfuzz" ]]; then

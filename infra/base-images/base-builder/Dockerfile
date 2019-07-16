@@ -86,7 +86,17 @@ RUN mkdir honggfuzz && \
     tar -xzv --strip-components=1 -f $SRC/oss-fuzz.tar.gz && \
     rm -rf $SRC/oss-fuzz.tar.gz
 
-COPY compile compile_afl compile_dataflow compile_libfuzzer compile_honggfuzz \
+ADD https://github.com/guidovranken/libfuzzer-gv/archive/master.zip $SRC/libfuzzer-gv.zip
+RUN mkdir libfuzzer-gv && \
+    cd libfuzzer-gv && \
+    unzip -j $SRC/libfuzzer-gv.zip && ls -l && \
+    rm -rf $SRC/libfuzzer-gv.zip
+RUN ls -l /
+RUN ls -l $SRC/
+RUN ls -l $SRC/libfuzzer-gv
+RUN realpath $SRC
+
+COPY compile compile_afl compile_dataflow compile_libfuzzer compile_honggfuzz compile_libfuzzer-gv \
     srcmap write_labels.py /usr/local/bin/
 
 CMD ["compile"]
