@@ -23,6 +23,7 @@ export INCLUDE_PATH_FLAGS=""
 
 # Generate lookup tables. This only needs to be done once.
 cd $SRC/cryptofuzz
+sed -i 's/^\s*postprocess.*//g' executor.cpp
 python gen_repository.py
 
 if [[ $CFLAGS = *-m32* ]]
@@ -59,6 +60,28 @@ if [[ $CFLAGS = *sanitize=memory* ]]
 then
     export CXXFLAGS="$CXXFLAGS -DMSAN"
 fi
+
+# Compile mbed TLS
+export MBEDTLS_LIBMBEDCRYPTO_A_PATH="$SRC/mbedtls/build/crypto/library/libmbedcrypto.a"
+export MBEDTLS_INCLUDE_PATH="$SRC/mbedtls/include"
+export CXXFLAGS="$CXXFLAGS -DCRYPTOFUZZ_MBEDTLS -I $MBEDTLS_INCLUDE_PATH"
+cd $SRC/mbedtls
+perl scripts/config.pl set MBEDTLS_CMAC_C
+
+if [[ $CFLAGS = *sanitize=memory* ]]
+then
+    perl scripts/config.pl unset MBEDTLS_AESNI_C
+    perl scripts/config.pl unset MBEDTLS_PADLOCK_C
+    perl scripts/config.pl unset MBEDTLS_HAVE_ASM
+fi
+
+mkdir build
+cd build
+cmake .. >/dev/null 2>&1
+make -j$(nproc) >/dev/null 2>&1
+# Compile Cryptofuzz mbedtls module
+cd $SRC/cryptofuzz/modules/mbedtls
+make -B
 
 # Compile Cityhash
 cd $SRC/cityhash
