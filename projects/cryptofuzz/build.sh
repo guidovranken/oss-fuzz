@@ -66,6 +66,7 @@ export MBEDTLS_LIBMBEDCRYPTO_A_PATH="$SRC/mbedtls/build/crypto/library/libmbedcr
 export MBEDTLS_INCLUDE_PATH="$SRC/mbedtls/include"
 export CXXFLAGS="$CXXFLAGS -DCRYPTOFUZZ_MBEDTLS -I $MBEDTLS_INCLUDE_PATH"
 cd $SRC/mbedtls
+perl scripts/config.pl set MBEDTLS_PLATFORM_MEMORY
 perl scripts/config.pl set MBEDTLS_CMAC_C
 
 if [[ $CFLAGS = *sanitize=memory* ]]
