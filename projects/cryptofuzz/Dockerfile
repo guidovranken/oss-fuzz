@@ -17,7 +17,7 @@
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER guidovranken@gmail.com
 
-RUN apt-get update && apt-get install -y software-properties-common python-software-properties make autoconf automake libtool build-essential cmake libboost-all-dev wget
+RUN apt-get update && apt-get install -y software-properties-common python-software-properties make autoconf automake libtool build-essential cmake libboost-all-dev wget mercurial
 
 # BoringSSL needs Go to build
 RUN add-apt-repository -y ppa:gophers/archive && apt-get update && apt-get install -y golang-1.9-go
@@ -39,6 +39,9 @@ RUN wget https://github.com/openssl/openssl/archive/OpenSSL_1_0_2-stable.zip
 RUN git clone --depth 1 https://github.com/google/cityhash.git
 RUN git clone --depth 1 https://github.com/golang/go
 RUN git clone --depth 1 https://github.com/randombit/botan.git
+RUN hg clone https://hg.mozilla.org/projects/nspr
+RUN hg clone https://hg.mozilla.org/projects/nss
 RUN apt-get remove -y libunwind8
+RUN apt-get update && apt-get install -y gyp ninja-build zlib1g-dev libsqlite3-dev
 
 COPY build.sh $SRC/

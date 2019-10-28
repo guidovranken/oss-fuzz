@@ -60,6 +60,22 @@ then
     export CXXFLAGS="$CXXFLAGS -DMSAN"
 fi
 
+
+# Compile NSS
+
+mkdir $SRC/nss-nspr
+mv $SRC/nss $SRC/nss-nspr/
+mv $SRC/nspr $SRC/nss-nspr/
+cd $SRC/nss-nspr/
+CFLAGS="" CXXFLAGS="" nss/build.sh --asan --static -v
+export NSS_NSPR_PATH=$(realpath $SRC/nss-nspr/)
+export CXXFLAGS="$CXXFLAGS -DCRYPTOFUZZ_NSS"
+export LINK_FLAGS="$LINK_FLAGS -lsqlite3"
+
+# Compile Cryptofuzz NSS module
+cd $SRC/cryptofuzz/modules/nss
+make -B
+
 # Compile Cityhash
 cd $SRC/cityhash
 if [[ $CFLAGS != *-m32* ]]
@@ -213,6 +229,24 @@ then
     cd $SRC/cryptofuzz/modules/golang
     make -B
 fi
+
+# Compile Cryptofuzz
+cd $SRC/cryptofuzz
+LIBFUZZER_LINK="$LIB_FUZZING_ENGINE" CXXFLAGS="$CXXFLAGS -DCRYPTOFUZZ_NO_OPENSSL $INCLUDE_PATH_FLAGS" make -B -j$(nproc) >/dev/null 2>&1
+
+# Generate dictionary
+./generate_dict
+
+# Copy fuzzer
+cp $SRC/cryptofuzz/cryptofuzz $OUT/cryptofuzz-nss-noasm
+# Copy dictionary
+cp $SRC/cryptofuzz/cryptofuzz-dict.txt $OUT/cryptofuzz-nss-noasm.dict
+# Copy seed corpus
+cp $SRC/cryptofuzz-corpora/libressl_latest.zip $OUT/cryptofuzz-nss-noasm_seed_corpus.zip
+
+rm $SRC/cryptofuzz/modules/nss/module.a
+
+exit 0
 
 ##############################################################################
 if [[ $CFLAGS != *sanitize=memory* && $CFLAGS != *-m32* ]]
