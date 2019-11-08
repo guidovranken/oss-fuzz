@@ -16,9 +16,10 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER guidovranken@gmail.com
-RUN apt-get update && apt-get install -y make autoconf automake libtool cmake libssl-dev wget lzip libpython3.5-dev python libboost-all-dev wget
+RUN apt-get update && apt-get install -y make autoconf automake libtool cmake wget lzip libpython3.5-dev python libboost-all-dev wget
 RUN git clone https://github.com/guidovranken/cryptofuzz.git
 RUN git clone --recursive --depth 1 https://github.com/Chia-Network/bls-signatures.git
 RUN git clone --depth 1 https://github.com/herumi/mcl.git
 RUN wget https://gmplib.org/download/gmp/gmp-6.1.2.tar.lz
+RUN wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz
 COPY build.sh $SRC/
