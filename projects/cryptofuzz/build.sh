@@ -60,7 +60,7 @@ go get golang.org/x/crypto/md4
 go get golang.org/x/crypto/ripemd160
 
 # This enables runtime checks for C++-specific undefined behaviour.
-export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_DEBUG"
+export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_DEBUG -D_LIBCPP_DEBUG"
 
 # Prevent Boost compilation error with -std=c++17
 export CXXFLAGS="$CXXFLAGS -D_LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR"
