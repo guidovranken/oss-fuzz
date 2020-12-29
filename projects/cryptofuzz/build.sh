@@ -474,8 +474,7 @@ export WOLFCRYPT_INCLUDE_PATH="$SRC/wolfssl"
 
 # Compile Cryptofuzz wolfcrypt (without assembly) module
 cd $SRC/cryptofuzz/modules/wolfcrypt
-make -B
-
+make -j$(nproc) -B
 
 ##############################################################################
 if [[ $CFLAGS != *sanitize=memory* ]]
