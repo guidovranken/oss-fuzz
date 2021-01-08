@@ -31,19 +31,40 @@ then
     CFLAGS="" CXXFLAGS="" ./b2 headers
     cp -R boost/ /usr/include/
 
+    export CXXFLAGS="$CXXFLAGS -DCRYPTOFUZZ_BOTAN"
+
     OLD_CFLAGS="$CFLAGS"
     OLD_CXXFLAGS="$CXXFLAGS"
 
     # Configure Cryptofuzz
+    cd $SRC/cryptofuzz/
+    python gen_repository.py
+
+    # Compile Botan
+    cd $SRC/botan
+    if [[ $CFLAGS != *-m32* ]]
+    then
+        ./configure.py --cc-bin=$CXX --cc-abi-flags="$CXXFLAGS" --disable-shared --disable-modules=locking_allocator --build-targets=static --without-documentation
+    else
+        ./configure.py --cpu=x86_32 --cc-bin=$CXX --cc-abi-flags="$CXXFLAGS" --disable-shared --disable-modules=locking_allocator --build-targets=static --without-documentation
+    fi
+    make -j$(nproc)
+
+    export LIBBOTAN_A_PATH="$SRC/botan/libbotan-3.a"
+    export BOTAN_INCLUDE_PATH="$SRC/botan/build/include"
+
+    # Compile Cryptofuzz Botan module
+    cd $SRC/cryptofuzz/modules/botan
+    make -B
+
+    # Build OpenSSL API fuzzer
     cp -R $SRC/cryptofuzz/ $SRC/cryptofuzz-openssl-api/
     cd $SRC/cryptofuzz-openssl-api/
-    python gen_repository.py
     rm extra_options.h
     echo -n '"' >>extra_options.h
     echo -n '--force-module=wolfCrypt-OpenSSL ' >>extra_options.h
     echo -n '"' >>extra_options.h
 
-    # Build OpenSSL API fuzzer
     cp -R $SRC/wolfssl/ $SRC/wolfssl-openssl-api/
     cd $SRC/wolfssl-openssl-api/
     autoreconf -ivf
