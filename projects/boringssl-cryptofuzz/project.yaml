@@ -1,0 +1,15 @@
+homepage: "https://boringssl.googlesource.com/boringssl/"
+language: c++
+main_repo: "https://boringssl.googlesource.com/boringssl"
+primary_contact: "guidovranken@gmail.com"
+auto_ccs:
+    - "davidben@google.com"
+    - "agl@google.com"
+    - "svaldez@google.com"
+sanitizers:
+ - address
+ - undefined
+ - memory
+architectures:
+ - x86_64
+ - i386
