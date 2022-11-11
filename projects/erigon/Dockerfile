@@ -19,6 +19,7 @@ FROM gcr.io/oss-fuzz-base/base-builder-go-codeintelligencetesting
 RUN git clone --depth 1 https://github.com/ledgerwatch/erigon $GOPATH/src/github.com/ledgerwatch/erigon
 RUN (cd $GOPATH/src/github.com/ledgerwatch/erigon/ && go mod tidy)
 RUN git clone --depth=1 https://github.com/ethereum/go-ethereum
+COPY runtime_fuzz.go $GOPATH/src/github.com/ledgerwatch/erigon/tests/fuzzers/runtime/runtime_fuzz.go
 
 WORKDIR $SRC/
 COPY build.sh $SRC/
