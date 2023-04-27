@@ -93,6 +93,13 @@ cp $SRC/python-library-fuzzers/fuzzer-decode.dict $OUT/
 cp $SRC/python-library-fuzzers/fuzzer-ast $OUT/
 cp $SRC/python-library-fuzzers/ast.py $OUT/
 cp $SRC/python-library-fuzzers/fuzzer-ast.dict $OUT/
+
+cp $SRC/python-library-fuzzers/fuzzer-tarfile $OUT/
+cp $SRC/python-library-fuzzers/tarfile.py $OUT/
+
+cp $SRC/python-library-fuzzers/fuzzer-zipfile $OUT/
+cp $SRC/python-library-fuzzers/zipfile.py $OUT/
+
 # Use CPython source code as seed corpus
 mkdir corp-ast/
 find $SRC/cpython -type f -name '*.py' -size -4097c -exec cp {} corp-ast/ \;
