@@ -100,6 +100,15 @@ cp $SRC/python-library-fuzzers/tarfile.py $OUT/
 cp $SRC/python-library-fuzzers/fuzzer-zipfile $OUT/
 cp $SRC/python-library-fuzzers/zipfile.py $OUT/
 
+cp $SRC/python-library-fuzzers/fuzzer-configparser $OUT/
+cp $SRC/python-library-fuzzers/configparser.py $OUT/
+
+cp $SRC/python-library-fuzzers/fuzzer-tomllib $OUT/
+cp $SRC/python-library-fuzzers/tomllib.py $OUT/
+
+cp $SRC/python-library-fuzzers/fuzzer-plistlib $OUT/
+cp $SRC/python-library-fuzzers/plist.py $OUT/
+
 # Use CPython source code as seed corpus
 mkdir corp-ast/
 find $SRC/cpython -type f -name '*.py' -size -4097c -exec cp {} corp-ast/ \;
